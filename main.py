@@ -1,7 +1,7 @@
 import logging
 
 def convert_if_not_number(var):
-    while var is not int or var is not float:
+    while (isinstance(var,int) or isinstance(var,float)) is False:
         try:
             var = float(var)
             break
@@ -10,65 +10,68 @@ def convert_if_not_number(var):
             var = input("Podaj składnik. ")
     return var
 
-logging.basicConfig(level=logging.DEBUG)
-result = 0
-
-#Operation input
-operation = input("Podaj działanie, posługując się odpowiednią liczbą: 1 Dodawanie, 2 Odejmowanie, 3 Mnożenie, 4 Dzielenie: ")
-while operation != '1' and operation != '2' and operation != '3' and operation != '4':
-    print("Podaj liczbę z zakresu 1-4")
-    operation = input("Podaj działanie, posługując się odpowiednią liczbą: 1 Dodawanie, 2 Odejmowanie, 3 Mnożenie, 4 Dzielenie: ")
-
-#Components of operation input
-comp1 = input("Podaj składnik 1. ")
-comp1 = convert_if_not_number(comp1)
-comp2 = input("Podaj składnik 2. ")
-comp2 = convert_if_not_number(comp2)
-add_list = []
-multiply_list = []
-
-#Add operation
-if operation == '1':
-    add_list.append(comp1)
-    add_list.append(comp2)
+def add(var1, var2):
+    sum = var1+var2
     comp_input = input("Podaj kolejny składnik lub 'N' jeśli chcesz zakończyć podawanie składników. ")
-    while comp_input != 'n' and comp_input != 'N':
-        if comp_input != 'n' and comp_input != 'N':
-            comp_input = convert_if_not_number(comp_input)
-            add_list.append(comp_input)
+    while comp_input.lower() != 'n':
+        comp_input = convert_if_not_number(comp_input)
+        sum += comp_input
         comp_input = input("Podaj kolejny składnik lub 'N' jeśli chcesz zakończyć podawanie składników. ")
-    logging.info("Dodaję %s" % add_list)
-    for i in add_list:
-        result += i
+    #logging.info("Dodaję %s" % add_list)
+    return sum
 
-#Sub Operation
-elif operation == '2':
-    logging.info("Odejmuję %s i %s" % (comp1, comp2))
-    result = comp1-comp2
+def sub(var1, var2):
+    logging.info("Odejmuję %s i %s" % (var1, var2))
+    return var1-var2
 
-#Multiply Operation
-elif operation == '3':
-    multiply_list.append(comp1)
-    multiply_list.append(comp2)
+def multiply(var1, var2):
+    result = var1*var2
     comp_input = input("Podaj kolejny składnik lub 'N' jeśli chcesz zakończyć podawanie składników. ")
-    while comp_input != 'n' and comp_input != 'N':
-        if comp_input != 'n' and comp_input != 'N':
-            comp_input = convert_if_not_number(comp_input)
-            multiply_list.append(comp_input)
+    while comp_input.lower() != 'n':
+        comp_input = convert_if_not_number(comp_input)
+        result *= comp_input
         comp_input = input("Podaj kolejny składnik lub 'N' jeśli chcesz zakończyć podawanie składników. ")
-    logging.info("Dodaję %s" % multiply_list)
-    result = 1
-    for i in multiply_list:
-        result *= i
+    #logging.info("Dodaję %s" % add_list)
+    return result
 
-#Div Operation
-elif operation == '4':
-    logging.info("Dzielę %s i %s" % (comp1, comp2))
-    while comp2 == 0:
+def div(var1, var2):
+    while var2 == 0:
         print("Nie można dzielić przez 0")
-        comp2 = input("Podaj składnik 2. ")
-        comp2=convert_if_not_number(comp2)
-    result = comp1/comp2
+        var2 = input("Podaj składnik 2. ")
+        var2 = convert_if_not_number(comp2)
+        logging.info("Dzielę %s i %s" % (var1, var2))
+    return var1/var2
 
-#Show result
-print("Wynik to %f" % result)
+logging.basicConfig(level=logging.DEBUG)
+
+if __name__ == "__main__":
+    while True:
+        next_operation = ''
+        result = 0
+        #Operation input
+        operation = input("Podaj działanie, posługując się odpowiednią liczbą: 1 Dodawanie, 2 Odejmowanie, 3 Mnożenie, 4 Dzielenie: ")
+        while operation not in {"1", "2", "3", "4"}:
+            print("Podaj liczbę z zakresu 1-4")
+            operation = input("Podaj działanie, posługując się odpowiednią liczbą: 1 Dodawanie, 2 Odejmowanie, 3 Mnożenie, 4 Dzielenie: ")
+        #Components of input operation
+        comp1 = input("Podaj składnik 1. ")
+        comp1 = convert_if_not_number(comp1)
+        comp2 = input("Podaj składnik 2. ")
+        comp2 = convert_if_not_number(comp2)
+        #Add operation
+        if operation == '1':
+            result = add(comp1,comp2)
+        #Sub Operation
+        elif operation == '2':
+            result = sub(comp1, comp2)
+        #Multiply Operation
+        elif operation == '3':
+            result = multiply(comp1, comp2)
+        #Div Operation
+        elif operation == '4':
+            result = div(comp1, comp2)
+        #Show result
+        print("Wynik to %f" % result)
+        next_operation = input("Czy chcesz zakończyć (T)?")
+        if next_operation.lower() == 't':
+            break
